@@ -1,0 +1,83 @@
+SAMPLE #1
+
+QUESTION #1
+----------
+
+Evalute the following expressions: ( what value do they produce?)
+
+
+a) Assume int x=3;  
+		
+	(x/10)                    evaluates to:  0
+		
+	(x/2.0)                   evaluates to:  1.5
+		
+	(x + 5 * 4 + 3 / 2)       evaluates to:  24
+
+         3 +  20   + 1
+
+            
+
+
+b) Assume boolean b1 = true, b2 = false; int i = 100, j = -4;
+
+	b1 ||	(j>0)  ||  (b2 && i==100)  evaluates to:  true
+
+	b1 && (b2 || i>j) && (b1 != b2)    evaluates to:  true
+
+	(b2 || !b2)                        evaluates to:  true
+
+c) Go back to (b) and circle the operators that short circuit:  the first || in the first expression short circuits
+
+
+d) Write INVALID after any of the following statements if they are invalid
+
+   Assume: String s1,s2; int i,j ; double d1,d2;
+
+	s1 = "Hello World";
+
+	s2 = "314159"; // ** BUG FIXED **
+
+	s1 = 3.14159;     // INVALID - can't assign a double into a String
+
+	d1 = s2;          // INVALID - can't assign a String into a double 
+
+	d2 = "2.1782818"; // INVALID - can't assign a String into a double 
+
+	i = 1 + 1/2.0 + 1/3.0 + 1/4.0; // INVALID - can't assign a double into an int (loss of precision will not be allowed)
+
+e) Assume the follwing code fragment: 
+
+int i = 9; 
+boolean b;
+
+
+if (i>0)
+{
+    b = (1 % 2) != 0;
+    i = i % 2;
+}
+else
+{
+    i = i + (i%2);
+    b = false;
+}
+
+if (i%2 ==0 )
+{
+     if (i>0)
+     {
+          i = 7;
+          b = true;
+     }
+}
+else
+{
+    if (b)
+         i = 9 - (i%5);
+    else
+         b = (i%2) != 0 ;
+}
+   
+ 
+What are the final values of b and i ?  ANSWER: b==true  i==8

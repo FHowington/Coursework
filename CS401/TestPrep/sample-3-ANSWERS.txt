@@ -1,0 +1,115 @@
+For questions asking "What's wrong?" Just write a part of a sentence 
+or a few words to describe the problem. In some cases the 
+answer may be "Nothing" if the code segment is perfectly legal.
+
+For questions asking "What is the output?" just print out what you 
+think will appear on the screen as the output of the print statements
+
+
+
+1) What's wrong with code segment ?
+
+	int x=5;
+	String s="10";
+
+	x += s;
+
+Your Answer for 1:
+
+x += s expands to x = x + s.  
+x + s produces a string which cannot be assigned back into x (an int)
+
+............................................................................
+2) What's wrong with code segment ?
+
+	int x=5;
+	String s="10";
+
+	s += x;
+
+
+Your Answer for 2:
+
+s += x expands to s = s + x.   
+s + x produces a string which CAN be assignmed back into s
+There is nothing wrong with this code
+
+
+............................................................................
+3) What's the output of this code segment ?
+
+	int x=5,y=10;
+
+	System.out.println( x + y );
+
+
+Your Answer for 3:
+
+15
+
+
+............................................................................
+4) What's the output of this code segment ?
+
+	int x=5,y=10;
+
+	System.out.println( "x + y = " + x + y );
+
+
+Your Answer for 4:
+
+x + y = 510
+
+
+............................................................................
+5) What is the output of this code segment?
+
+	int i=50;
+
+	while ( i < 25 )
+		System.out.print( "* ");
+	
+	System.out.println("\nThat's all folks!");
+
+
+Your Answer for 5:
+
+
+That's all folks!
+
+............................................................................
+6) What is the output of this code segment?
+
+	boolean inputOk = true;
+
+	if (inputOk)
+		System.out.println("Thank you");
+		System.out.println("Your Input was OK");
+	
+	if (!inputOk)
+		System.out.println("Sorry - try again you");
+		System.out.println("Your Input was bad");
+
+
+Your Answer for 6:
+
+Thank you
+Your Input was OK
+Your Input was bad
+
+
+............................................................................
+7) After each of the following descriptions - write "FOR","WHILE" or "DO"
+   to indicate which loop form is best suited for the described task.
+
+	Assume you must use a loop to do the given task
+
+	a) Prompt a user for a number in a desired range until he/she gets it right   DO
+	
+	b) Calculate the sum of all the numbers from 1 to 100   FOR
+	
+	c) Divide a given number by 2 until the number reaches 1.   WHILE
+
+
+
+

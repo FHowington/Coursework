@@ -1,0 +1,4 @@
+.text
+lui $t1,0XDEAD
+ori $t1,$t1,0XBEEF
+

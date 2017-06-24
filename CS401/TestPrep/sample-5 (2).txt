@@ -1,0 +1,344 @@
+			FALL 12 CS 401 MIDTERM EXAM
+				2012 OCT 22
+
+
+...........................................................................................................
+1)	Worth 5% all/nothing
+
+	What's the output/outcome of this code segment? 
+	You may asume it compiles and runs. BUT IT --MIGHT-- CRASHOr THROW EXCEPTION
+
+
+	String s = "+";  
+	for( int i = 0 ; i < s.length() ; ++i )
+	   s += i;
+	System.out.println( s );
+
+
+
+...........................................................................................................
+2)	Worth 5% all/nothing 
+
+	What's wrong with code segment? 
+	It compiles & runs but why does it not produce the right output? 
+	
+public class P2
+{
+	public static void main( String args[] )
+	{
+		String s1="aardvaark";
+		String s2="zebra";
+
+		if ( s1 != s2 )
+		   System.out.println( s1 + " alphabetically different from " + s2 );
+		else
+		   System.out.println( s1 + " alphabetically identical to " + s2 );
+	}
+}
+
+
+...........................................................................................................
+3)	Worth 5%  (1% each)
+
+	What's the output/outcome of this Program?
+	You may assume it compiles & runs. BUT IT --MIGHT-- CRASHOr THROW EXCEPTION
+
+public class P3
+{
+	public static void main( String args[] )
+	{
+		String[] words = { "alpha", "bravo", "charlie", "delta", "echo" };
+		String[] blanks ={ "blank", "blank",  "blank", "blank", "blank" };
+		int j=0;
+		for (int i=words.length-1 ; i>=0 ; --i)
+			mystery( words[i], blanks[j++] );
+
+		for (int i=0 ; i< blanks.length ; ++i )
+			System.out.print( blanks[i] + " ");
+	}
+	static void mystery( String s1, String s2 )
+	{
+		String tmp = s1;
+		s1 = s2;
+		s2 = tmp;
+	}
+}
+
+
+...........................................................................................................
+4) 	Worth 5%  (1% each)
+
+	What's the output/outcome of this Program?
+	You may assume it compiles & runs. BUT IT --MIGHT-- CRASHOr THROW EXCEPTION
+
+
+public class P4
+{
+	public static void main( String args[] )
+	{
+		String[] words = { "alpha", "bravo", "charlie", "delta", "echo" };
+		String[] blanks ={ "blank", "blank",  "blank", "blank", "blank" };
+		int j=0;
+		for (int i=words.length-1 ; i>=0 ; --i)
+		{
+			mystery( words, i , blanks, j );
+			++j;
+		}
+		for (int i=0 ; i< blanks.length ; ++i )
+			System.out.print( blanks[i] + " ");
+	}
+	static void mystery( String[] arr1, int i,  String[] arr2, int j )
+	{
+		String tmp = arr1[i];
+		arr1[i] = arr2[j];
+		arr2[j] = tmp;
+	}
+}
+
+
+...........................................................................................................
+5) Worth 5%  all/nothing
+
+	When you pass an array into a method, the java compiler does not make a 
+	copy of the data in the array but instead just sends off a copy of the 
+	reference to (address of) the beginning of the actual data.
+
+Why?
+
+...........................................................................................................
+6) Worth 5%  all/nothing
+
+	What is the output/outcome of this program? BUT IT --MIGHT-- CRASHOr THROW EXCEPTION
+
+
+public class P6
+{
+	public static void main( String args[] )
+	{
+		int[] arr = null;
+		mystery( arr );
+		for ( int i=0 ; i< arr.length ; ++i )
+			System.out.print( arr[i] + " " );
+		System.out.println();
+	}
+
+	static void mystery( int[] arr )
+	{
+		arr = new int[5];
+		for ( int i=0 ; i< arr.length ; ++i )
+			arr[i] = i*2;
+	}
+}
+
+
+
+...........................................................................................................
+7) Worth 3%  (1% each)
+
+	After each statment enter the value that is in the variable after that 
+	statement executes:
+
+	a)	String s;  	null
+
+	b)	double d;	0.0
+	
+	c)	int i;		0
+
+
+...........................................................................................................
+8) Worth 10% (2% each line)
+
+	What is the output/outcome of this code segment?
+
+	for (int i=0 ; i<5 ; ++i )
+	{	for (int j=i ; j<5 ; ++j )
+			System.out.print( j + " " );
+		System.out.println();
+	}
+
+
+
+...........................................................................................................
+9)	Worth 5%  all/nothing
+
+	What is the output of this code segment? 
+
+
+	String s = "Hello World";
+	s.toUpperCase();
+	System.out.println( s );
+
+
+
+...........................................................................................................
+10)	Worth 5% (1% each)
+
+	What is the output of this code segment?
+	
+	int[] arr1= new int[5]; // inits to all zeros
+	int[] arr2= new int[5]; // ints to all zeros
+	arr2 = arr1;
+	for (int i=0 ; i<arr1.length ; ++i )
+		arr1[i] = i*2;
+	for (int i=0 ; i< arr2.length ; ++i )
+		System.out.print( arr2[i] + " " );
+	System.out.println();
+	
+
+...........................................................................................................
+11) Worth 5%  all/nothing
+
+	What happened to the chunk of ints that arr2 initially pointed to
+	after the execution of the statement  arr2=arr1; ?
+	
+
+
+
+...........................................................................................................
+12) Worth 4%  all/nothing
+
+	What's wrong with code segment 
+
+	int x=5;
+	String s="10";
+	s += x;
+
+Select one answer from the following
+
+The += operator is not defined on a String and an int
+The += operator is not defined on ints
+The += operator is not defined on Strings
+There is nothing wrong with it. It works fine
+
+
+
+
+...........................................................................................................
+13) Worth 4%  2% each
+
+Part A: 2%  What's the output of these two (similar) code segments?
+
+segment A:	for (int i=0 ; i<5 ; i++ )
+				System.out.print("*");
+
+segment B:	for (int i=0 ; i<5 ; ++i )
+				System.out.print("*");
+
+
+...........................................................................................................
+14)	Worth 4% (all or nothing - no partial)
+
+	Are these two loops identical in output ?
+
+
+	for (int i=0 ; i<10 ; ++i )
+		System.out.print("*");
+VS.
+	int i=0;
+	while (i < 10)
+	{
+		System.out.print("*");	
+		++i;
+	}
+
+Your answer for #14: ( a yes or no)
+
+
+
+15)	Worth 12%   (2% each)
+The following code compiles and runs without error: 
+
+What is the output of this program?
+
+public class MethodsAndParameters
+{
+     public static void main( String [ ] args )
+     {
+       foo( 0,  0.0 );         
+       foo( );                 
+       foo( 3.14159 );         
+       foo( 7>3,   2%3);           
+       foo( 1/2.4, 3*2 );           
+       foo( 42 );              
+       System.out.println( );                                         
+     }
+     
+     static void foo( double d, int i )
+     {
+        System.out.print( "I" + "  " );
+     }
+     
+     static void foo( int i )
+     {
+        System.out.print( "yes" + "  " );
+     }
+     
+     static void foo( double d )
+     {
+        System.out.print( "mastered" + "  " );
+     }
+     
+     static void foo( int i, double d )
+     {
+        System.out.print( "methods" + "  " );
+     }
+     
+     static void foo( )
+     {
+        System.out.print( "using" + "  " );
+     }
+          
+     static void foo(  boolean b, int i)
+     {
+        System.out.print( "have" + "  " );
+     }
+}
+
+Your answer for #15:
+
+
+16) Worth 10%   (2% each)
+
+The following code compiles and runs without error:  
+What is the output of this program
+
+public class MoreMethodsAndParameters
+{
+   static public void main( String [ ] args )
+   {
+        int a = 42;
+	  int b = 24;
+	  int c = 19;
+	  int d = 1;
+	  
+	  m16( a );  
+	  m16( b );
+	  m16( c + d );
+
+	  changeA( a );
+	  
+	  b = changeB( b );
+	  
+	  m16( a );  
+	  m16( b );
+   }
+   
+   static void m16( int a )
+   {
+     System.out.println( a );
+   }
+   
+   static void changeA( int a )
+   {
+       a = 0;
+   }
+   
+   static int changeB( int b )
+   {
+      return 7;
+   }
+}
+
+Your answer for #16:
+
+

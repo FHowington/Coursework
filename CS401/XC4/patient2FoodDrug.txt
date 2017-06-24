@@ -1,0 +1,5 @@
+John_Doe,broccoli,plavix,aspirin
+Jane_Doe,lipitor,plavix
+Tom_Smith,cialis,soybeans
+Ed_Smith,viagra,plavix
+Bob_Jones,lipitor,asparagus

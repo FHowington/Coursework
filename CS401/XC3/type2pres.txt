@@ -1,0 +1,5 @@
+A+,G.W.Bush,B.H.Obama,J.F.Kennedy
+A-,A.Lincoln,U.S.Grant,L.B.Johnson,G.A.Ford,W.J.Clinton
+B+,T.L.Hoffman,F.D.Roosevelt,J.A.Garfield
+O,R.M.Nixon,G.Cleveland,C.A.Arthur
+B-,
