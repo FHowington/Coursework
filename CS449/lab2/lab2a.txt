@@ -1,0 +1,9 @@
+int		4 bytes
+short		2 bytes
+long		8 bytes
+long long	8 bytes
+unsigned int	4 bytes
+char		1 bytes
+float		4 bytes
+double		8 bytes
+long double	16 bytes

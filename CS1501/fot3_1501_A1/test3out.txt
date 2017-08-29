@@ -1,0 +1,72 @@
+Here are the results for backtracks:
+1 word solutions:
+backtracks
+2 word solutions:
+back tracks
+backs track
+track backs
+tracks back
+
+Here are the results for monty python:
+3 word solutions:
+hymn no potty
+hymn on potty
+hymn pony tot
+hymn potty no
+hymn potty on
+hymn tot pony
+my not python
+my python not
+my python ton
+my ton python
+myth not pony
+myth pony not
+myth pony ton
+myth ton pony
+no hymn potty
+no potty hymn
+not my python
+not myth pony
+not nymph toy
+not pony myth
+not python my
+not toy nymph
+nymph not toy
+nymph ton toy
+nymph tot yon
+nymph toy not
+nymph toy ton
+nymph yon tot
+on hymn potty
+on potty hymn
+pony hymn tot
+pony myth not
+pony myth ton
+pony not myth
+pony ton myth
+pony tot hymn
+potty hymn no
+potty hymn on
+potty no hymn
+potty on hymn
+python my not
+python my ton
+python not my
+python ton my
+ton my python
+ton myth pony
+ton nymph toy
+ton pony myth
+ton python my
+ton toy nymph
+tot hymn pony
+tot nymph yon
+tot pony hymn
+tot yon nymph
+toy not nymph
+toy nymph not
+toy nymph ton
+toy ton nymph
+yon nymph tot
+yon tot nymph
+

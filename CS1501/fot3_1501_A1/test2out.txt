@@ -1,0 +1,92 @@
+Here are the results for raziber:
+1 word solutions:
+bizarre
+brazier
+2 word solutions:
+raze rib
+rib raze
+
+Here are the results for ycrtashc:
+1 word solutions:
+scratchy
+2 word solutions:
+arch cyst
+char cyst
+chats cry
+cry chats
+cyst arch
+cyst char
+
+Here are the results for sceacloe:
+1 word solutions:
+coalesce
+2 word solutions:
+ace close
+cease col
+close ace
+coca eels
+coca else
+coca lees
+col cease
+eels coca
+else coca
+lees coca
+
+Here are the results for in clog imp:
+1 word solutions:
+compiling
+2 word solutions:
+coming lip
+gnomic lip
+lip coming
+lip gnomic
+3 word solutions:
+clog imp in
+clog in imp
+cog imp nil
+cog in limp
+cog limp in
+cog nil imp
+col gin imp
+col imp gin
+gin col imp
+gin imp col
+imp clog in
+imp cog nil
+imp col gin
+imp gin col
+imp in clog
+imp nil cog
+in clog imp
+in cog limp
+in imp clog
+in limp cog
+limp cog in
+limp in cog
+nil cog imp
+nil imp cog
+
+Here are the results for too wacky:
+2 word solutions:
+tacky woo
+woo tacky
+3 word solutions:
+at coy wok
+at wok coy
+cot ow yak
+cot yak ow
+cow to yak
+cow yak to
+coy at wok
+coy wok at
+ow cot yak
+ow yak cot
+to cow yak
+to yak cow
+wok at coy
+wok coy at
+yak cot ow
+yak cow to
+yak ow cot
+yak to cow
+

@@ -1,0 +1,9 @@
+Script started on Tue 16 May 2017 09:58:21 AM EDT
+[?1034h(1) thoth $ gcc lab1.c
+lab1.c: In function ‘main’:
+lab1.c:5: error: expected ‘;’ before ‘return’
+(2) thoth $ Use "exit" to leave the shell.
+(2) thoth $ exit
+exit
+
+Script done on Tue 16 May 2017 09:58:41 AM EDT
