@@ -3,6 +3,7 @@
  * Forbes Turley
  * Summer 2017
  */
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
