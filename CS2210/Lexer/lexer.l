@@ -1,6 +1,9 @@
 %{
 #include <stdio.h>
-int yyline = 1, yycolumn = 1;
+int yyline = 1, yycolumn = 1, yyval = 0;
+
+#define LIMIT1 500
+#define LIMIT2 4096
 
 #define ANDnum 1
 #define ASSGNnum 2
@@ -43,6 +46,9 @@ int yyline = 1, yycolumn = 1;
 #define VOIDnum 39
 #define EOFnum 40
 
+char *ST;
+int locs[LIMIT1];
+int numberAdded = 0;
 %}
 
 
@@ -237,6 +243,7 @@ TAB \t
 
 {ICONST}	{
 		yycolumn+=yyleng;
+		yyval = atoi(yytext);
 		return ICONSTnum;
 		}
 
@@ -301,7 +308,25 @@ TAB \t
 		}
 
 {ID}		{
+		int i;
+		for(i=0;i<numberAdded;i++){
+			if(strcmp(yytext,ST + locs[i]) == 0){
+				yyval = locs[i];
+				yycolumn+=yyleng;
+				return IDnum;
+			}
+		}
+		if(numberAdded > 0){
+			strcpy(ST + locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1,yytext);
+			locs[numberAdded] = locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1;
+		}
+		else{
+			strcpy(ST,yytext);
+			locs[numberAdded] = 0;
+		}
+		numberAdded++;
 		yycolumn+=yyleng;
+		yyval = locs[numberAdded-1];
 		return IDnum;
 		}
 
@@ -312,6 +337,11 @@ int main(int argc, char** argv){
 	    yyin = (FILE*)(fopen( argv[1], "r" ));
 	else
 	    yyin = stdin;
+	int i;
+	for(i=0;i<LIMIT1;i++)
+		locs[i] = -1;
+	
+	ST = malloc(sizeof(char)*LIMIT2);
 
 	while(1){
 		int temp = yylex();
@@ -355,6 +385,7 @@ int main(int argc, char** argv){
 
 				case IDnum:
 				printf("Identifier. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				printf("Located at %d, Its %s\n",yyval,ST + yyval);
 				break;
 
 				case INTnum:
@@ -431,6 +462,7 @@ int main(int argc, char** argv){
 
 				case ICONSTnum:
 				printf("Integer constant. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				printf("Its value is %d\n",yyval);
 				break;
 
 				case IFnum:

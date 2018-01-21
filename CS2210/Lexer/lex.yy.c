@@ -537,7 +537,10 @@ char *yytext;
 #line 1 "lexer.l"
 #line 2 "lexer.l"
 #include <stdio.h>
-int yyline = 1, yycolumn = 1;
+int yyline = 1, yycolumn = 1, yyval = 0;
+
+#define LIMIT1 500
+#define LIMIT2 4096
 
 #define ANDnum 1
 #define ASSGNnum 2
@@ -580,7 +583,10 @@ int yyline = 1, yycolumn = 1;
 #define VOIDnum 39
 #define EOFnum 40
 
-#line 584 "lex.yy.c"
+char *ST;
+int locs[LIMIT1];
+int numberAdded = 0;
+#line 590 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -798,10 +804,10 @@ YY_DECL
 		}
 
 	{
-#line 94 "lexer.l"
+#line 100 "lexer.l"
 
 
-#line 805 "lex.yy.c"
+#line 811 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -861,7 +867,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 96 "lexer.l"
+#line 102 "lexer.l"
 {
 		return 0;
 		}
@@ -869,7 +875,7 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 100 "lexer.l"
+#line 106 "lexer.l"
 {
 		yyline++;
 		yycolumn=0;
@@ -877,21 +883,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 105 "lexer.l"
+#line 111 "lexer.l"
 {
 		yycolumn+=1;
 		}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 109 "lexer.l"
+#line 115 "lexer.l"
 {
 		yycolumn+=6;
 		}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "lexer.l"
+#line 119 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return ANDnum;
@@ -899,7 +905,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 118 "lexer.l"
+#line 124 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return ASSGNnum;
@@ -907,7 +913,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 123 "lexer.l"
+#line 129 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return DECLARATIONnum;
@@ -915,7 +921,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 128 "lexer.l"
+#line 134 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return DOTnum;
@@ -923,7 +929,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 133 "lexer.l"
+#line 139 "lexer.l"
 {
 			yycolumn+=yyleng;
 			return ENDDECLARATIONSnum;
@@ -931,7 +937,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 138 "lexer.l"
+#line 144 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return EQUALnum;
@@ -939,7 +945,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 143 "lexer.l"
+#line 149 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return GTnum;
@@ -947,7 +953,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 148 "lexer.l"
+#line 154 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return INTnum;
@@ -955,7 +961,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 153 "lexer.l"
+#line 159 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return LBRACnum;
@@ -963,7 +969,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 158 "lexer.l"
+#line 164 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return LPARENnum;
@@ -971,7 +977,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 163 "lexer.l"
+#line 169 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return METHODnum;
@@ -979,7 +985,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 168 "lexer.l"
+#line 174 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return NEnum;
@@ -987,7 +993,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 173 "lexer.l"
+#line 179 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return ORnum;
@@ -995,7 +1001,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 178 "lexer.l"
+#line 184 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return PROGRAMnum;
@@ -1003,7 +1009,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 183 "lexer.l"
+#line 189 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return RBRACnum;
@@ -1011,7 +1017,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 188 "lexer.l"
+#line 194 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return RPARENnum;
@@ -1019,7 +1025,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 193 "lexer.l"
+#line 199 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return SEMInum;
@@ -1027,7 +1033,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 198 "lexer.l"
+#line 204 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return VALnum;
@@ -1035,7 +1041,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 203 "lexer.l"
+#line 209 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return WHILEnum;
@@ -1043,7 +1049,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 208 "lexer.l"
+#line 214 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return CLASSnum;
@@ -1051,7 +1057,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 213 "lexer.l"
+#line 219 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return COMMAnum;
@@ -1059,7 +1065,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 218 "lexer.l"
+#line 224 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return DIVIDEnum;
@@ -1067,7 +1073,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 223 "lexer.l"
+#line 229 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return ELSEnum;
@@ -1075,7 +1081,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 228 "lexer.l"
+#line 234 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return EQnum;
@@ -1083,7 +1089,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 233 "lexer.l"
+#line 239 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return GEnum;
@@ -1091,15 +1097,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 238 "lexer.l"
+#line 244 "lexer.l"
 {
 		yycolumn+=yyleng;
+		yyval = atoi(yytext);
 		return ICONSTnum;
 		}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 243 "lexer.l"
+#line 250 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return IFnum;
@@ -1107,7 +1114,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 248 "lexer.l"
+#line 255 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return LBRACEnum;
@@ -1115,7 +1122,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 253 "lexer.l"
+#line 260 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return LEnum;
@@ -1123,7 +1130,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 258 "lexer.l"
+#line 265 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return LTnum;
@@ -1131,7 +1138,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 263 "lexer.l"
+#line 270 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return MINUSnum;
@@ -1139,7 +1146,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 268 "lexer.l"
+#line 275 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return NOTnum;
@@ -1147,7 +1154,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 273 "lexer.l"
+#line 280 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return PLUSnum;
@@ -1155,7 +1162,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 278 "lexer.l"
+#line 285 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return RBRACEnum;
@@ -1163,7 +1170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 283 "lexer.l"
+#line 290 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return RETURNnum;
@@ -1171,7 +1178,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 288 "lexer.l"
+#line 295 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return TIMESnum;
@@ -1179,14 +1186,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 293 "lexer.l"
+#line 300 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return VOIDnum;
 		}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 298 "lexer.l"
+#line 305 "lexer.l"
 {
 		yycolumn+=yyleng;
 		return EOFnum;
@@ -1194,18 +1201,36 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 303 "lexer.l"
+#line 310 "lexer.l"
 {
+		int i;
+		for(i=0;i<numberAdded;i++){
+			if(strcmp(yytext,ST + locs[i]) == 0){
+				yyval = locs[i];
+				yycolumn+=yyleng;
+				return IDnum;
+			}
+		}
+		if(numberAdded > 0){
+			strcpy(ST + locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1,yytext);
+			locs[numberAdded] = locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1;
+		}
+		else{
+			strcpy(ST,yytext);
+			locs[numberAdded] = 0;
+		}
+		numberAdded++;
 		yycolumn+=yyleng;
+		yyval = locs[numberAdded-1];
 		return IDnum;
 		}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 308 "lexer.l"
+#line 333 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1209 "lex.yy.c"
+#line 1234 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2204,7 +2229,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 308 "lexer.l"
+#line 333 "lexer.l"
 
 
 
@@ -2213,6 +2238,11 @@ int main(int argc, char** argv){
 	    yyin = (FILE*)(fopen( argv[1], "r" ));
 	else
 	    yyin = stdin;
+	int i;
+	for(i=0;i<LIMIT1;i++)
+		locs[i] = -1;
+	
+	ST = malloc(sizeof(char)*LIMIT2);
 
 	while(1){
 		int temp = yylex();
@@ -2256,6 +2286,7 @@ int main(int argc, char** argv){
 
 				case IDnum:
 				printf("Identifier. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				printf("Located at %d, Its %s\n",yyval,ST + yyval);
 				break;
 
 				case INTnum:
@@ -2332,6 +2363,7 @@ int main(int argc, char** argv){
 
 				case ICONSTnum:
 				printf("Integer constant. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				printf("Its value is %d\n",yyval);
 				break;
 
 				case IFnum:

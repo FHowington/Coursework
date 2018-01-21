@@ -3,5 +3,7 @@
 	class Test {
 		method void main() {
 			System.println();
+			System;
+			x = y + 5;
 		}
 	}
