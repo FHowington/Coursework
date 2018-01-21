@@ -1,7 +1,7 @@
-/* Test comment */
-program xyz;
-class Test {
-	method void main() {
-		System.println();
+	/* Test comment */
+	program xyz;
+	class Test {
+		method void main() {
+			System.println();
+		}
 	}
-}

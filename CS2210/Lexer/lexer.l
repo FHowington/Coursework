@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+int yyline = 1, yycolumn = 1;
 
 #define ANDnum 1
 #define ASSGNnum 2
@@ -85,185 +86,398 @@ RETURN "return"
 TIMES "*"
 VOID "void"
 ID [a-zA-Z][a-zA-Z0-9]*
+NEWLINE \n
+SPACE " "
+TAB \t
 
 
 %%
 
 {COMMENT}	{
-		printf("Comment\n");
 		return 0;
 		}
 
+{NEWLINE}	{
+		yyline++;
+		yycolumn=0;
+		}
+
+{SPACE}		{
+		yycolumn+=1;
+		}
+
+{TAB}		{
+		yycolumn+=6;
+		}
+
 {AND}		{
+		yycolumn+=yyleng;
 		return ANDnum;
 		}
 
 {ASSGN}		{
+		yycolumn+=yyleng;
 		return ASSGNnum;
 		}
 
 {DECLARATION}	{
+		yycolumn+=yyleng;
 		return DECLARATIONnum;
 		}
 
 {DOT}		{
+		yycolumn+=yyleng;
 		return DOTnum;
 		}
 
 {ENDDECLARATIONS}	{
+			yycolumn+=yyleng;
 			return ENDDECLARATIONSnum;
 			}
 
 {EQUAL}		{
+		yycolumn+=yyleng;
 		return EQUALnum;
 		}
 
 {GT}		{
+		yycolumn+=yyleng;
 		return GTnum;
 		}
 
 {INT}		{
+		yycolumn+=yyleng;
 		return INTnum;
 		}
 
 {LBRAC}		{
+		yycolumn+=yyleng;
 		return LBRACnum;
 		}
 
 {LPAREN}	{
+		yycolumn+=yyleng;
 		return LPARENnum;
 		}
 
 {METHOD}	{
+		yycolumn+=yyleng;
 		return METHODnum;
 		}
 
 {NE}		{
+		yycolumn+=yyleng;
 		return NEnum;
 		}
 
 {OR}		{
+		yycolumn+=yyleng;
 		return ORnum;
 		}
 
 {PROGRAM}	{
+		yycolumn+=yyleng;
 		return PROGRAMnum;
 		}
 
 {RBRAC}		{
+		yycolumn+=yyleng;
 		return RBRACnum;
 		}
 
 {RPAREN}	{
+		yycolumn+=yyleng;
 		return RPARENnum;
 		}
 
 {SEMI}		{
+		yycolumn+=yyleng;
 		return SEMInum;
 		}
 
 {VAL}		{
+		yycolumn+=yyleng;
 		return VALnum;
 		}
 
 {WHILE}		{
+		yycolumn+=yyleng;
 		return WHILEnum;
 		}
 
 {CLASS}		{
+		yycolumn+=yyleng;
 		return CLASSnum;
 		}
 
 {COMMA}		{
+		yycolumn+=yyleng;
 		return COMMAnum;
 		}
 
 {DIVIDE}	{
+		yycolumn+=yyleng;
 		return DIVIDEnum;
 		}
 
 {ELSE}		{
+		yycolumn+=yyleng;
 		return ELSEnum;
 		}
 
 {EQ}		{
+		yycolumn+=yyleng;
 		return EQnum;
 		}
 
 {GE}		{
+		yycolumn+=yyleng;
 		return GEnum;
 		}
 
 {ICONST}	{
+		yycolumn+=yyleng;
 		return ICONSTnum;
 		}
 
 {IF}		{
+		yycolumn+=yyleng;
 		return IFnum;
 		}
 
 {LBRACE}	{
+		yycolumn+=yyleng;
 		return LBRACEnum;
 		}
 
 {LE}		{
+		yycolumn+=yyleng;
 		return LEnum;
 		}
 
 {LT}		{
+		yycolumn+=yyleng;
 		return LTnum;
 		}
 
 {MINUS}		{
+		yycolumn+=yyleng;
 		return MINUSnum;
 		}
 
 {NOT}		{
+		yycolumn+=yyleng;
 		return NOTnum;
 		}
 
 {PLUS}		{
+		yycolumn+=yyleng;
 		return PLUSnum;
 		}
 
 {RBRACE}	{
-		return WHILEnum;
+		yycolumn+=yyleng;
+		return RBRACEnum;
 		}
 
 {RETURN}	{
+		yycolumn+=yyleng;
 		return RETURNnum;
 		}
 
 {TIMES}		{
+		yycolumn+=yyleng;
 		return TIMESnum;
 		}
 
 {VOID}		{
+		yycolumn+=yyleng;
 		return VOIDnum;
 		}
 
 <<EOF>>		{
+		yycolumn+=yyleng;
 		return EOFnum;
 		}
 
 {ID}		{
+		yycolumn+=yyleng;
 		return IDnum;
 		}
 
 %%
 
 int main(int argc, char** argv){
-    if ( argc > 0 )
-            yyin = (FILE*)(fopen( argv[1], "r" ));
-    else
-            yyin = stdin;
+	if ( argc > 0 )
+	    yyin = (FILE*)(fopen( argv[1], "r" ));
+	else
+	    yyin = stdin;
 
 	while(1){
 		int temp = yylex();
-		if(temp == EOFnum)
+		if(temp == EOFnum){
+			printf("EOF reached");
 			break;
-		else
-			printf("Result is %d\n",temp);
+		}
+		else{
+			switch(temp){
+				case 0:
+				printf("Comment. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ANDnum:
+				printf("And. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ASSGNnum:
+				printf("Assignment. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case DECLARATIONnum:
+				printf("Declaration. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case DOTnum:
+				printf("Dot. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ENDDECLARATIONSnum:
+				printf("End Declaration. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case EQUALnum:
+				printf("Equal. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case GTnum:
+				printf("Greater than. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case IDnum:
+				printf("Identifier. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case INTnum:
+				printf("Int. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case LBRACnum:
+				printf("L Bracket. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case LPARENnum:
+				printf("L Parenthesis. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case METHODnum:
+				printf("Method. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case NEnum:
+				printf("Not equal. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ORnum:
+				printf("Or. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case PROGRAMnum:
+				printf("Program. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case RBRACnum:
+				printf("R bracket. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case RPARENnum:
+				printf("R parenthesis. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case SEMInum:
+				printf("Semicolon. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case VALnum:
+				printf("Val. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case WHILEnum:
+				printf("While. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case CLASSnum:
+				printf("Class. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case COMMAnum:
+				printf("Comma. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case DIVIDEnum:
+				printf("Divide. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ELSEnum:
+				printf("Else. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case EQnum:
+				printf("Equal to. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case GEnum:
+				printf("Greater or equal. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case ICONSTnum:
+				printf("Integer constant. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case IFnum:
+				printf("If. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case LBRACEnum:
+				printf("Left brace. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case LEnum:
+				printf("Less or equal. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case LTnum:
+				printf("Less than. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case MINUSnum:
+				printf("Minus. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case NOTnum:
+				printf("Not. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case PLUSnum:
+				printf("Plus. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case RBRACEnum:
+				printf("Right Brace. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case RETURNnum:
+				printf("Return. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case TIMESnum:
+				printf("Times. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+
+				case VOIDnum:
+				printf("Void. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				break;
+			}
+		}
 	}
 	return 0;
 }
