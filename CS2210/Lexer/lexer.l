@@ -54,6 +54,7 @@ int numberAdded = 0;
 
 
 COMMENT "/*"((\*+[^/*])|([^*]))*\**"*/"
+STRING \'(\\.|[^"\\])*\'
 AND "&&"
 ASSGN ":="
 DECLARATION "declarations"
@@ -307,6 +308,33 @@ TAB \t
 		return EOFnum;
 		}
 
+{STRING}	{
+		int i;
+		char temp[strlen(yytext)-1];
+		strncpy(temp,yytext+1,strlen(yytext)-2);
+		temp[strlen(yytext)-2] = '\0';
+
+		for(i=0;i<numberAdded;i++){
+			if(strcmp(temp,ST + locs[i]) == 0){
+				yyval = locs[i];
+				yycolumn+=yyleng;
+				return SCONSTnum;
+			}
+		}
+		if(numberAdded > 0){
+			strcpy(ST + locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1,temp);
+			locs[numberAdded] = locs[numberAdded-1] + strlen(ST + locs[numberAdded-1]) + 1;
+		}
+		else{
+			strcpy(ST,temp);
+			locs[numberAdded] = 0;
+		}
+		numberAdded++;
+		yycolumn+=yyleng;
+		yyval = locs[numberAdded-1];
+		return SCONSTnum;
+		}
+
 {ID}		{
 		int i;
 		for(i=0;i<numberAdded;i++){
@@ -329,6 +357,7 @@ TAB \t
 		yyval = locs[numberAdded-1];
 		return IDnum;
 		}
+
 
 %%
 
@@ -385,6 +414,11 @@ int main(int argc, char** argv){
 
 				case IDnum:
 				printf("Identifier. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
+				printf("Located at %d, Its %s\n",yyval,ST + yyval);
+				break;
+
+				case SCONSTnum:
+				printf("String. \tLine: %d, Column: %d\n",yyline,(int)yycolumn);
 				printf("Located at %d, Its %s\n",yyval,ST + yyval);
 				break;
 
