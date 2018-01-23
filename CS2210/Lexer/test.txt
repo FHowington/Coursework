@@ -1,7 +1,7 @@
-	/* Test comment */
+	/*Test comment*/
 	program xyz;
 	class Test {
-		method void main('xyz') {
+		method void main('xyz) {
 			System.println();
 			System;
 			x = y + 5;
