@@ -194,17 +194,14 @@ int main(int argc, char** argv){
                 
                 case BADNAME:
                 printf("ERROR: INVALID IDENTIFIER: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
-                error=1;
                 break;
 
                 case BADCOMMENT:
                 printf("ERROR: INVALID COMMENT: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
-                error=1;
                 break;
 
                 case BADSTRING:
                 printf("ERROR: INVALID STRING: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
-                error=1;
                 break;
 
 			}

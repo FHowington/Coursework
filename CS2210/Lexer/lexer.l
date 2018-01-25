@@ -58,8 +58,8 @@ int numberAdded = 0;
 
 COMMENT "/*"((\*+[^/*])|([^*]))*\**"*/"
 BADCOMMENT "/*"((\*+[^/*])|([^*]))*\**""
-STRING \'(\\.|[^"\\])*\'
-BADSTRING \'(\\.|[^"\\])*
+STRING \'(\\.|[^"\\\n()\'])*\'
+BADSTRING \'(\\.|[^"\\\n()\'])*
 AND "&&"
 ASSGN ":="
 DECLARATION "declarations"
@@ -316,7 +316,23 @@ TAB \t
 
 {STRING}	{
 		int i;
-		char temp[strlen(yytext)-1];
+		int j;
+		char temp[strlen(yytext)];
+		for(i=1;i<strlen(yytext)-2;i++){
+			if(yytext[i] == '\\' && yytext[i+1] == 't'){
+				for(j=0;j<i;j++)
+					temp[j]=yytext[j];
+				temp[i] = 9;
+				for(j=i+1;j<strlen(yytext)-1;j++){
+					temp[j]=yytext[j+1];
+				}
+			temp[strlen(yytext)-1] = '\0';
+			yytext = temp;
+			yyleng -=1;
+			}
+		}
+		
+		temp[strlen(yytext)-1];
 		strncpy(temp,yytext+1,strlen(yytext)-2);
 		temp[strlen(yytext)-2] = '\0';
 
