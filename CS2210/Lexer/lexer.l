@@ -107,6 +107,11 @@ TAB \t
 %%
 
 {COMMENT}	{
+		int i;
+		for(i=1;i<strlen(yytext);i++)
+			if(yytext[i] == '\n')
+				yyline++;
+			
 		return 0;
 		}
 
@@ -323,6 +328,48 @@ TAB \t
 				for(j=0;j<i;j++)
 					temp[j]=yytext[j];
 				temp[i] = 9;
+				for(j=i+1;j<strlen(yytext)-1;j++){
+					temp[j]=yytext[j+1];
+				}
+			temp[strlen(yytext)-1] = '\0';
+			yytext = temp;
+			yyleng -=1;
+			}
+		}
+
+		for(i=1;i<strlen(yytext)-2;i++){
+			if(yytext[i] == '\\' && yytext[i+1] == 'n'){
+				for(j=0;j<i;j++)
+					temp[j]=yytext[j];
+				temp[i] = 10;
+				for(j=i+1;j<strlen(yytext)-1;j++){
+					temp[j]=yytext[j+1];
+				}
+			temp[strlen(yytext)-1] = '\0';
+			yytext = temp;
+			yyleng -=1;
+			}
+		}
+
+		for(i=1;i<strlen(yytext)-2;i++){
+			if(yytext[i] == '\\' && yytext[i+1] == '\\'){
+				for(j=0;j<i;j++)
+					temp[j]=yytext[j];
+				temp[i] = '\\';
+				for(j=i+1;j<strlen(yytext)-1;j++){
+					temp[j]=yytext[j+1];
+				}
+			temp[strlen(yytext)-1] = '\0';
+			yytext = temp;
+			yyleng -=1;
+			}
+		}
+
+		for(i=1;i<strlen(yytext)-2;i++){
+			if(yytext[i] == '\\' && yytext[i+1] == '\''){
+				for(j=0;j<i;j++)
+					temp[j]=yytext[j];
+				temp[i] = '\'';
 				for(j=i+1;j<strlen(yytext)-1;j++){
 					temp[j]=yytext[j+1];
 				}
