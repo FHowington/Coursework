@@ -48,6 +48,7 @@ int yyline = 1, yycolumn = 1, yyval = 0;
 #define BADNAME 41
 #define BADCOMMENT 42
 #define BADSTRING 43
+#define BADSYMBOL 44
 
 char *ST;
 int locs[LIMIT1];
@@ -59,7 +60,7 @@ int numberAdded = 0;
 COMMENT "/*"((\*+[^/*])|([^*]))*\**"*/"
 BADCOMMENT "/*"((\*+[^/*])|([^*]))*\**""
 STRING \'(\\.|[^"\\\n()\'])*\'
-BADSTRING \'(\\.|[^"\\\n()\'])*
+BADSTRING \'(\\.|[^"\\\n()\'])*(\))*(\;)*
 AND "&&"
 ASSGN ":="
 DECLARATION "declarations"
@@ -102,6 +103,7 @@ BADNAME [0-9][a-zA-Z0-9]*
 NEWLINE \n
 SPACE " "
 TAB \t
+BADSYMBOL [^a-zA-Z0-9]
 
 
 %%
@@ -111,13 +113,14 @@ TAB \t
 		for(i=1;i<strlen(yytext);i++)
 			if(yytext[i] == '\n')
 				yyline++;
+				yycolumn=1;
 			
 		return 0;
 		}
 
 {NEWLINE}	{
 		yyline++;
-		yycolumn=0;
+		yycolumn=1;
 		}
 
 {SPACE}		{
@@ -323,6 +326,7 @@ TAB \t
 		int i;
 		int j;
 		char temp[strlen(yytext)];
+		yycolumn+=(yyleng);
 		for(i=1;i<strlen(yytext)-2;i++){
 			if(yytext[i] == '\\' && yytext[i+1] == 't'){
 				for(j=0;j<i;j++)
@@ -399,7 +403,6 @@ TAB \t
 			locs[numberAdded] = 0;
 		}
 		numberAdded++;
-		yycolumn+=yyleng;
 		yyval = locs[numberAdded-1];
 		return SCONSTnum;
 		}
@@ -422,8 +425,8 @@ TAB \t
 			locs[numberAdded] = 0;
 		}
 		numberAdded++;
-		yycolumn+=yyleng;
 		yyval = locs[numberAdded-1];
+		yycolumn+=yyleng;
 		return IDnum;
 		}
 
@@ -437,6 +440,10 @@ TAB \t
 
 {BADSTRING}	{
 		return BADSTRING;
+		}
+
+{BADSYMBOL}	{
+		return BADSYMBOL;
 		}
 
 

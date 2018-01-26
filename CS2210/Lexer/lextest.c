@@ -192,16 +192,21 @@ int main(int argc, char** argv){
 				break;
                 
                 case BADNAME:
-                printf("ERROR: INVALID IDENTIFIER: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
+                printf("ERROR: Malformed indentifier '%s', at line %d column %d\n",yytext,yyline,(int)yycolumn);
                 break;
 
                 case BADCOMMENT:
-                printf("ERROR: INVALID COMMENT: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
+                printf("ERROR: Unmatched comment, at line %d column %d\n",yyline,(int)yycolumn);
                 break;
 
                 case BADSTRING:
-                printf("ERROR: INVALID STRING: %s Line: %d, Column: %d\n",yytext,yyline,(int)yycolumn);
+                printf("ERROR: Unmatched string constant, at line %d column %d\n",yyline,(int)yycolumn);
                 break;
+
+                case BADSYMBOL:
+                printf("ERROR: Undefined symbol %s, at line %d column %d\n",yytext,yyline,(int)yycolumn);
+                break;
+                
 
 			}
 		}
