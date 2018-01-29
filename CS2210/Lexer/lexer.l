@@ -56,7 +56,6 @@ int numberAdded = 0;
 %}
 
 
-
 COMMENT "/*"((\*+[^/*])|([^*]))*\**"*/"
 BADCOMMENT "/*"((\*+[^/*])|([^*]))*\**""
 STRING \'(\\.|[^"\\\n()\'])*\'
@@ -107,8 +106,8 @@ BADSYMBOL [^a-zA-Z0-9]
 
 
 %%
-
 {COMMENT}	{
+		/*Ensure that we keep track of comment length appropriately*/
 		int i;
 		for(i=1;i<strlen(yytext);i++)
 			if(yytext[i] == '\n')
@@ -118,7 +117,9 @@ BADSYMBOL [^a-zA-Z0-9]
 		return 0;
 		}
 
+
 {NEWLINE}	{
+		/*Keeping track of whitespace*/
 		yyline++;
 		yycolumn=1;
 		}
@@ -132,6 +133,7 @@ BADSYMBOL [^a-zA-Z0-9]
 		}
 
 {AND}		{
+		/*For all tokens, add their length to the yycolumn*/
 		yycolumn+=yyleng;
 		return ANDnum;
 		}
@@ -322,7 +324,10 @@ BADSYMBOL [^a-zA-Z0-9]
 		return EOFnum;
 		}
 
+
 {STRING}	{
+		/*Search through string table to detemrine if an instance of the string already exists
+		If so, output the index. Otherwise, place string in string table and output its index*/
 		int i;
 		int j;
 		char temp[strlen(yytext)];
@@ -408,6 +413,7 @@ BADSYMBOL [^a-zA-Z0-9]
 		}
 
 {ID}		{
+		/*Same procedure for IDs as strings, except we do not have to check for escape sequences*/
 		int i;
 		for(i=0;i<numberAdded;i++){
 			if(strcmp(yytext,ST + locs[i]) == 0){

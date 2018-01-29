@@ -8,6 +8,7 @@
 #define EOFnum 40
 
 int main(int argc, char** argv){
+    //Determining whether we are reading from a file or reading from the standard input
 	if ( argc > 0 )
 	    yyin = (FILE*)(fopen( argv[1], "r" ));
 	else
@@ -26,13 +27,15 @@ int main(int argc, char** argv){
             break;
 		int temp = yylex();
 		if(temp == EOFnum){
-			printf("EOF reached");
+			printf("%d\t%d\tEOFnum\n",yyline,(int)yycolumn);
 			break;
 		}
 		else{
 			switch(temp){
+                //This giant switch statement accounts for all possible tokens. Case 0 is when a comment is input.
+                //In this case, we simply ignore it. In all other cases, we output information about what the 
+                //token is.
 				case 0:
-				printf("%d\t%d\tCOMMENTnum\n",yyline,(int)yycolumn);
 				break;
 
 				case ANDnum:
@@ -84,7 +87,7 @@ int main(int argc, char** argv){
 				break;
 
 				case METHODnum:
-				printf("%d\t%d\tLPARENnum\n",yyline,(int)yycolumn);
+				printf("%d\t%d\tMETHODnum\n",yyline,(int)yycolumn);
 				break;
 
 				case NEnum:
