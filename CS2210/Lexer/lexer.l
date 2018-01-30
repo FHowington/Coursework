@@ -320,7 +320,6 @@ BADSYMBOL [^a-zA-Z0-9]
 		}
 
 <<EOF>>		{
-		yycolumn+=yyleng;
 		return EOFnum;
 		}
 
@@ -437,18 +436,26 @@ BADSYMBOL [^a-zA-Z0-9]
 		}
 
 {BADNAME}	{
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADNAME;
 		}
 
 {BADCOMMENT}	{
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADCOMMENT;
 		}
 
 {BADSTRING}	{
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADSTRING;
 		}
 
 {BADSYMBOL}	{
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADSYMBOL;
 		}
 

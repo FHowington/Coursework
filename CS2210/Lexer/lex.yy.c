@@ -1217,13 +1217,12 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 #line 322 "lexer.l"
 {
-		yycolumn+=yyleng;
 		return EOFnum;
 		}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 328 "lexer.l"
+#line 327 "lexer.l"
 {
 		/*Search through string table to detemrine if an instance of the string already exists
 		If so, output the index. Otherwise, place string in string table and output its index*/
@@ -1313,7 +1312,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 415 "lexer.l"
+#line 414 "lexer.l"
 {
 		/*Same procedure for IDs as strings, except we do not have to check for escape sequences*/
 		int i;
@@ -1340,40 +1339,48 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 439 "lexer.l"
+#line 438 "lexer.l"
 {
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADNAME;
 		}
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 443 "lexer.l"
+#line 444 "lexer.l"
 {
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADCOMMENT;
 		}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 447 "lexer.l"
+#line 450 "lexer.l"
 {
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADSTRING;
 		}
 	YY_BREAK
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 451 "lexer.l"
+#line 456 "lexer.l"
 {
+		yyval = yycolumn;
+		yycolumn+=yyleng;
 		return BADSYMBOL;
 		}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 457 "lexer.l"
+#line 464 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1377 "lex.yy.c"
+#line 1384 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2372,7 +2379,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 457 "lexer.l"
+#line 464 "lexer.l"
 
 
 

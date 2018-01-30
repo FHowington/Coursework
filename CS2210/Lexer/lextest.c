@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 				break;
 
 				case DECLARATIONnum:
-				printf("%d\t%d\tDECLARATIONnum\n",yyline,(int)yycolumn);
+				printf("%d\t%d\tDECLARATIONSnum\n",yyline,(int)yycolumn);
 				break;
 
 				case DOTnum:
@@ -55,7 +55,7 @@ int main(int argc, char** argv){
 				break;
 
 				case ENDDECLARATIONSnum:
-				printf("%d\t%d\tENDDECLARATIONnum\n",yyline,(int)yycolumn);
+				printf("%d\t%d\tENDDECLARATIONSnum\n",yyline,(int)yycolumn);
 				break;
 
 				case EQUALnum:
@@ -147,7 +147,7 @@ int main(int argc, char** argv){
 				break;
 
 				case ICONSTnum:
-				printf("%d\t%d\tICONSTnum\n",yyline,(int)yycolumn);
+				printf("%d\t%d\tICONSTnum\t%d\n",yyline,(int)yycolumn,yyval);
 				break;
 
 				case IFnum:
@@ -195,19 +195,19 @@ int main(int argc, char** argv){
 				break;
                 
                 case BADNAME:
-                printf("ERROR: Malformed indentifier '%s', at line %d column %d\n",yytext,yyline,(int)yycolumn);
+                printf("ERROR: Malformed indentifier '%s', at line %d column %d\n",yytext,yyline,(int)yyval);
                 break;
 
                 case BADCOMMENT:
-                printf("ERROR: Unmatched comment, at line %d column %d\n",yyline,(int)yycolumn);
+                printf("ERROR: Unmatched comment, at line %d column %d\n",yyline,(int)yyval);
                 break;
 
                 case BADSTRING:
-                printf("ERROR: Unmatched string constant, at line %d column %d\n",yyline,(int)yycolumn);
+                printf("ERROR: Unmatched string constant, at line %d column %d\n",yyline,(int)yyval);
                 break;
 
                 case BADSYMBOL:
-                printf("ERROR: Undefined symbol %s, at line %d column %d\n",yytext,yyline,(int)yycolumn);
+                printf("ERROR: Undefined symbol %s, at line %d column %d\n",yytext,yyline,(int)yyval);
                 break;
                 
 

@@ -29,4 +29,4 @@ Error: Malformed identifier '2i', at line 16 column 13
 Error: Unmatched comment, at line 17 column 12
 21    1       EOFnum           
 
-String Table : i system readln x println 
+String Table : i System readln x println 
