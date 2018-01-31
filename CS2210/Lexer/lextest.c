@@ -1,31 +1,30 @@
+/* 
+ * Forbes Turley
+ * University of Pittsburgh
+ * CS 2210 Spring 2018
+ * 
+ * This is the driver for my lexer
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "lex.yy.c"
+#include <string.h>
 
-#define ANDnum 1
 #define LIMIT1 500
 #define LIMIT2 4096
-#define EOFnum 40
 
 int main(int argc, char** argv){
-    //Determining whether we are reading from a file or reading from the standard input
-	if ( argc > 0 )
-	    yyin = (FILE*)(fopen( argv[1], "r" ));
-	else
-	    yyin = stdin;
 	int i;
 	for(i=0;i<LIMIT1;i++)
 		locs[i] = -1;
 	
 	ST = malloc(sizeof(char)*LIMIT2);
-    	int error=0;
 	printf("Line\tColumnn\tToken\t\tIndex_in_String\n");
 
 
 	while(1){
-        if(error==1)
-            break;
 		int temp = yylex();
+	
 		if(temp == EOFnum){
 			printf("%d\t%d\tEOFnum\n",yyline,(int)yycolumn);
 			break;
@@ -35,9 +34,6 @@ int main(int argc, char** argv){
                 //This giant switch statement accounts for all possible tokens. Case 0 is when a comment is input.
                 //In this case, we simply ignore it. In all other cases, we output information about what the 
                 //token is.
-				case 0:
-				break;
-
 				case ANDnum:
 				printf("%d\t%d\tANDnum\n",yyline,(int)yycolumn);
 				break;
@@ -209,7 +205,6 @@ int main(int argc, char** argv){
                 case BADSYMBOL:
                 printf("ERROR: Undefined symbol %s, at line %d column %d\n",yytext,yyline,(int)yyval);
                 break;
-                
 
 			}
 		}

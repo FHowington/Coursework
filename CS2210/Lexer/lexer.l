@@ -44,7 +44,7 @@ int yyline = 1, yycolumn = 1, yyval = 0;
 #define SCONSTnum 37
 #define TIMESnum 38
 #define VOIDnum 39
-#define EOFnum 40
+#define EOFnum 0
 #define BADNAME 41
 #define BADCOMMENT 42
 #define BADSTRING 43
@@ -54,8 +54,6 @@ char *ST;
 int locs[LIMIT1];
 int numberAdded = 0;
 %}
-
-
 COMMENT "/*"((\*+[^/*])|([^*]))*\**"*/"
 BADCOMMENT "/*"((\*+[^/*])|([^*]))*\**""
 STRING \'(\\.|[^"\\\n()\'])*\'
@@ -103,9 +101,14 @@ NEWLINE \n
 SPACE " "
 TAB \t
 BADSYMBOL [^a-zA-Z0-9]
-
+ENDFILE "<<EOF>>"
 
 %%
+
+{ENDFILE}	{
+		return EOFnum;
+		}
+
 {COMMENT}	{
 		/*Ensure that we keep track of comment length appropriately*/
 		int i;
@@ -113,8 +116,6 @@ BADSYMBOL [^a-zA-Z0-9]
 			if(yytext[i] == '\n')
 				yyline++;
 				yycolumn=1;
-			
-		return 0;
 		}
 
 
@@ -319,11 +320,6 @@ BADSYMBOL [^a-zA-Z0-9]
 		return VOIDnum;
 		}
 
-<<EOF>>		{
-		return EOFnum;
-		}
-
-
 {STRING}	{
 		/*Search through string table to detemrine if an instance of the string already exists
 		If so, output the index. Otherwise, place string in string table and output its index*/
@@ -340,7 +336,7 @@ BADSYMBOL [^a-zA-Z0-9]
 					temp[j]=yytext[j+1];
 				}
 			temp[strlen(yytext)-1] = '\0';
-			yytext = temp;
+			strcpy(yytext,temp);
 			yyleng -=1;
 			}
 		}
@@ -354,7 +350,7 @@ BADSYMBOL [^a-zA-Z0-9]
 					temp[j]=yytext[j+1];
 				}
 			temp[strlen(yytext)-1] = '\0';
-			yytext = temp;
+			strcpy(yytext,temp);
 			yyleng -=1;
 			}
 		}
@@ -368,7 +364,7 @@ BADSYMBOL [^a-zA-Z0-9]
 					temp[j]=yytext[j+1];
 				}
 			temp[strlen(yytext)-1] = '\0';
-			yytext = temp;
+			strcpy(yytext,temp);
 			yyleng -=1;
 			}
 		}
@@ -382,7 +378,7 @@ BADSYMBOL [^a-zA-Z0-9]
 					temp[j]=yytext[j+1];
 				}
 			temp[strlen(yytext)-1] = '\0';
-			yytext = temp;
+			strcpy(yytext,temp);
 			yyleng -=1;
 			}
 		}

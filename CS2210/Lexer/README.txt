@@ -1,8 +1,3 @@
-The *.out files were generated using the following commands.
+I have included a makefile, however the only commands necessary are lex lexer.l, gcc -o lextest.c -lfl
 
-$ cat ./strings.mjava | ./lexer > ./strings.mjava.out
-$ cat ./test.mjava | ./lexer > ./test.mjava.out
-$ cat ./test2.mjava | ./lexer > ./test2.mjava.out
-
-The output of your lexer should match these outputs save for minor
-differences.
+To my knowledge every functionality required of this program has been implemented. I have it set up so the on ICONSTnum the yyval will contain the value of the integer constant since in some (but not all) of the test cases this was shown to be the case. Additionally, when encountering a string of length 0 such as '', the string added to the string table is literally just a '\0' so that it is of lenght 0. I noticed this was not the case in one of the sample outputs but couldn't reason why that should be the case. 
