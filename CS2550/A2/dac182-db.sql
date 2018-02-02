@@ -1,91 +1,219 @@
-drop table 	ATHLETE	cascade constraints;
-drop table 	COUNTRY_TEAM	cascade constraints;
-drop table 	EVENT	cascade constraints;
-drop table 	SPORT	cascade constraints;
-drop table 	SPORT_TEAM	cascade constraints;
-drop table 	VENUE	cascade constraints;
-drop table  PARTICIPANT cascade constraints;
-drop table  MEMBER cascade constraints;
+/*
+    David Cyphert   dac182
+    Forbes Turley   [...]
+    CS 2550 - Principles of Database Systems
+    University of Pittsburgh - Spring 2018
+    Due: 2/6/2018
+*/
 
-CREATE TABLE SPORT  
-( sport_no INT NOT NULL,  
-  sport_name varchar(30) NOT NULL,
-  CONSTRAINT sport_k PRIMARY KEY(sport_no) DEFERRABLE
-);
-
-CREATE TABLE VENUE  
-( venue_code varchar(3) NOT NULL,  
-  venue_name varchar(30) NOT NULL,
-  capacity INT NOT NULL,
-  CONSTRAINT venue_k PRIMARY KEY(venue_code) DEFERRABLE
-);
-
-CREATE TABLE EVENT  
-( event_no INT NOT NULL,  
-  event_name varchar(30) NOT NULL,
-  sport_no INT NOT NULL,
-  venue_code varchar(3) NOT NULL, 
-  start_time DATE NOT NULL,  
-  spectators_count varchar(30) NOT NULL,   
-  percentage FLOAT,
-  CONSTRAINT event_k PRIMARY KEY(event_no) DEFERRABLE,
-  FOREIGN KEY (venue_code) REFERENCES VENUE DEFERRABLE INITIALLY DEFERRED,
-  FOREIGN KEY (sport_no) REFERENCES SPORT DEFERRABLE INITIALLY DEFERRED
-);
-
-
-CREATE TABLE COUNTRY_TEAM   
-( country_team_code varchar(3) NOT NULL,
-  country_name varchar(30) NOT NULL,
-  rank_in_2014 INT,
-  current_points INT NOT NULL,
-  CONSTRAINT country_k PRIMARY KEY(country_team_code) DEFERRABLE
-);
-
-CREATE TABLE SPORT_TEAM   
-( sport_team_no INT NOT NULL,
-  country_team_code varchar(3) NOT NULL,
-  CONSTRAINT sportteam_k PRIMARY KEY(sport_team_no) DEFERRABLE,
-  FOREIGN KEY (country_team_code) REFERENCES COUNTRY_TEAM DEFERRABLE INITIALLY DEFERRED
-);
-
-CREATE TABLE PARTICIPANT  
-( event_no INT NOT NULL,  
-  sport_team_no INT NOT NULL,
-  medal varchar(6) NOT NULL,
-  FOREIGN KEY (event_no) REFERENCES EVENT DEFERRABLE INITIALLY DEFERRED,
-  FOREIGN KEY (sport_team_no) REFERENCES SPORT_TEAM DEFERRABLE INITIALLY DEFERRED
-);
-
-CREATE TABLE ATHLETE  
-( athlete_no INT NOT NULL,
-  full_name varchar(30) NOT NULL,
-  weight INT NOT NULL,
-  CONSTRAINT athlete_k PRIMARY KEY(athlete_no) DEFERRABLE
-);
-
-CREATE TABLE MEMBER  
-( sport_team_no INT NOT NULL,
-  athlete_no INT NOT NULL,
-  FOREIGN KEY (sport_team_no) REFERENCES SPORT_TEAM DEFERRABLE INITIALLY DEFERRED,
-  FOREIGN KEY (athlete_no) REFERENCES ATHLETE DEFERRABLE INITIALLY DEFERRED
-);
-
-ALTER TABLE SPORT_TEAM
-  ADD sport_no INT NOT NULL;
+/* drop tables/sequences */
+DECLARE cnt NUMBER;
+BEGIN         
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'PARTICIPANT';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE PARTICIPANT';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'MEMBER';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE MEMBER';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'SPORT_TEAM';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE SPORT_TEAM';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'ATHLETE';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE ATHLETE';
+    END IF;
+     
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'COUNTRY_TEAM';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE COUNTRY_TEAM';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'EVENT';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE EVENT';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'VENUE';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE VENUE';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_tables WHERE table_name = 'SPORT';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP TABLE SPORT';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_sequences WHERE sequence_name = 'ATHLETE_SEQ';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP SEQUENCE ATHLETE_SEQ';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_sequences WHERE sequence_name = 'SPORT_SEQ';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP SEQUENCE SPORT_SEQ';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_sequences WHERE sequence_name = 'SPORT_TEAM_SEQ';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP SEQUENCE SPORT_TEAM_SEQ';
+    END IF;
+    
+    SELECT COUNT(*) INTO cnt FROM user_sequences WHERE sequence_name = 'EVENT_SEQ';
+    IF cnt <> 0 THEN
+      EXECUTE IMMEDIATE 'DROP SEQUENCE EVENT_SEQ';
+    END IF;
+END;
+/
+/* END drop tables/sequences */
   
-ALTER TABLE SPORT_TEAM ADD CONSTRAINT st_sn
-  FOREIGN KEY (sport_no) REFERENCES SPORT
-  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+/* Question 1 */
 
-ALTER TABLE COUNTRY_TEAM
-ADD CHECK ((rank_in_2014 > 0 and rank_in_2014 < 27) OR rank_in_2014 IS NULL);
+CREATE TABLE SPORT (
+    sport_no int NOT NULL,
+    sport_name varchar(30),
+    PRIMARY KEY(sport_no) DEFERRABLE
+);
 
-ALTER TABLE ATHLETE
-ADD dob DATE NOT NULL;
+CREATE TABLE EVENT (
+    event_no int NOT NULL,
+    event_name varchar(30),
+    sport_no int NOT NULL,
+    venue_code varchar(3) NOT NULL,
+    start_time date,
+    spectators_count int,
+    percentage float, 
+    PRIMARY KEY(event_no) DEFERRABLE
+);
+
+CREATE TABLE VENUE (
+    venue_code varchar(3) NOT NULL,
+    venue_name varchar(30),
+    capacity int,
+    PRIMARY KEY (venue_code) DEFERRABLE
+);
+
+CREATE TABLE PARTICIPANT (
+    event_no int NOT NULL,
+    sport_team_no int NOT NULL,
+    medal varchar(6)
+);
+
+CREATE TABLE SPORT_TEAM (
+    sport_team_no int NOT NULL,
+    country_team_code varchar(3) NOT NULL,
+    PRIMARY KEY(sport_team_no) DEFERRABLE
+);
+
+CREATE TABLE COUNTRY_TEAM (
+    country_team_code varchar(3) NOT NULL,
+    country_name varchar(100),
+    rank_in_2014 int,
+    current_points int,
+    PRIMARY KEY (country_team_code) DEFERRABLE
+);
+
+CREATE TABLE MEMBER (
+    sport_team_no int NOT NULL,
+    athlete_no int NOT NULL
+);
+
+CREATE TABLE ATHLETE (
+    athlete_no int NOT NULL,
+    full_name varchar(30),
+    weight int,
+    PRIMARY KEY (athlete_no) DEFERRABLE
+);
+
+ALTER TABLE EVENT
+ADD CONSTRAINT FK_sport_event FOREIGN KEY (sport_no) REFERENCES SPORT(sport_no) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE EVENT
+ADD CONSTRAINT FK_venue_event FOREIGN KEY (venue_code) REFERENCES VENUE(venue_code) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE EVENT
+ADD CONSTRAINT check_percentage
+CHECK (percentage <= 1.0) DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE PARTICIPANT
+ADD CONSTRAINT FK_event_participant FOREIGN KEY (event_no) REFERENCES EVENT(event_no) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE PARTICIPANT
+ADD CONSTRAINT FK_sport_team_participant FOREIGN KEY (sport_team_no) REFERENCES SPORT_TEAM(sport_team_no) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE PARTICIPANT
+ADD CONSTRAINT check_metal
+CHECK (UPPER(medal) IN ('GOLD', 'SILVER', 'BRONZE', 'NONE')) DEFERRABLE INITIALLY IMMEDIATE;
+  
+ALTER TABLE MEMBER
+ADD CONSTRAINT FK_sport_team_member FOREIGN KEY (sport_team_no) REFERENCES SPORT_TEAM(sport_team_no) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE MEMBER
+ADD CONSTRAINT FK_athlete_member FOREIGN KEY (athlete_no) REFERENCES ATHLETE(athlete_no) DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE SPORT_TEAM
-ADD CHECK ((SELECT COUNT FROM MEMBER M WHERE M.sport_team_no = sport_team_no) > 0);
+ADD CONSTRAINT FK_country_team_sport_team FOREIGN KEY (country_team_code) REFERENCES COUNTRY_TEAM(country_team_code) DEFERRABLE INITIALLY DEFERRED;
+
+/* END Question 1 */
+
+/* Question 2 */
+
+/* 2a */
+ALTER TABLE PARTICIPANT
+ADD CONSTRAINT alt_participant UNIQUE(event_no, sport_team_no) DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE MEMBER
+ADD CONSTRAINT alt_member UNIQUE(sport_team_no, athlete_no) DEFERRABLE INITIALLY IMMEDIATE;
+
+/* 2b */
+ALTER TABLE SPORT_TEAM
+ADD sport_no int NOT NULL CONSTRAINT FK_sport_sport_team REFERENCES SPORT(sport_no) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+/* 2c */
+ALTER TABLE COUNTRY_TEAM
+ADD CONSTRAINT check_rank_in_2014
+CHECK ((rank_in_2014 = null) or (rank_in_2014 BETWEEN 1 and 26));
+
+/* 2d */
+ALTER TABLE ATHLETE
+ADD dob date NOT NULL;
+
+/* END Question 2 */
+
+/* Question 3 */
+
+ALTER SESSION SET PLSCOPE_SETTINGS = 'IDENTIFIERS:NONE';
+
+CREATE OR REPLACE TRIGGER CheckSportTeamAthleteCount
+  BEFORE INSERT OR UPDATE ON SPORT_TEAM
+  FOR EACH ROW
+
+DECLARE
+    cnt number;
+    action varchar(6);
+BEGIN
+    
+    IF INSERTING THEN action := 'Insert';
+    ELSE action := 'Update';
+    END IF; 
+    
+    SELECT COUNT(*) INTO cnt FROM MEMBER
+    WHERE sport_team_no = :new.sport_team_no;
+    
+    IF(cnt < 1) THEN
+        raise_application_error(-20001, action||' failed. Sport team must have at least 1 athlete to represent a country team.');
+    END IF;
+END;
+/
+
+/* END Question 3 */
+
+/* Question 4 */
 
 INSERT INTO VENUE (venue_code, venue_name, capacity) VALUES ('pos', 'PyeongChang Olympic Stadium', 35000);
 INSERT INTO VENUE (venue_code, venue_name, capacity) VALUES ('asj', 'Alpensia Ski Jumping Centre', 8500);
@@ -102,8 +230,6 @@ INSERT INTO VENUE (venue_code, venue_name, capacity) VALUES ('gcc', 'Gangneung C
 INSERT INTO VENUE (venue_code, venue_name, capacity) VALUES ('khc', 'Kwandong Hockey Centre', 6000);
 
 
-
-
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('gre', 'Greece', NULL, 11);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('gha', 'Ghana', NULL, 12);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('ngr', 'Nigeria', NULL, 3);
@@ -114,7 +240,7 @@ INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('den', 'Denmark', NULL, 1);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('dma', 'Dominica', NULL, 1);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('ger', 'Germany', 6, 1);
-INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('tls', 'Timor-Leste', NULL, 1);
+INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('tls', 'Democratic Republic of Timor-Leste', NULL, 1);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('lat', 'Latvia', 23, 2);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('lbn', 'Lebanon', NULL, 3);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('rou', 'Romania', NULL, 5);
@@ -189,13 +315,14 @@ INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('pol', 'Poland', 11, 8);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('pur', 'Puerto Rico', NULL, 0);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('fra', 'France', 10, 9);
-INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('mkd', 'FYROM', NULL, 8);
+INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('mkd', 'The Former Yugoslav Republic of Macedonia', NULL, 8);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('fin', 'Finland', 18, 2);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('phi', 'Philippines', NULL, 1);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('hun', 'Hungary', NULL, 3);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('hkg', 'Hong Kong, China', NULL, 2);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('oar', 'Olympic Athletes from Russia', NULL, 5);
 INSERT INTO COUNTRY_TEAM (country_team_code, country_name, rank_in_2014, current_points) VALUES ('cor', 'Korea', NULL, 7);
+
 
 INSERT INTO SPORT (sport_no, sport_name) VALUES (1, 'Alpine skiing');
 INSERT INTO SPORT (sport_no, sport_name) VALUES (2, 'Biathlon');
@@ -518,7 +645,6 @@ INSERT INTO ATHLETE (athlete_no, full_name, weight, dob) VALUES (300, 'Liana Hus
 
 
 alter session set nls_date_format = 'mm/dd/yy hh12:mi AM';
-
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (1,'Downhill',1,'jac','02/11/18 11:00 AM',3000, NULL);
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (2,'Slalom',1,'yac','02/12/18 10:15 AM',3000, NULL);
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (3,'Combined',1,'jac','02/13/18 11:30 AM',6000, NULL);
@@ -540,88 +666,6 @@ INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spect
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (19,'Normal hill',13,'asj','02/10/18 09:35 PM',7000, NULL);
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (20,'Parallel slalom',14,'psp','02/24/18 01:00 PM',1000, NULL);
 INSERT INTO EVENT (event_no, event_name, sport_no, venue_code, start_time, spectators_count, percentage) VALUES (21,'5000 meters',15,'gao','02/11/18 04:00 PM',10000, NULL);
-
-
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (1, 'nor', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (2, 'ger', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (3, 'can', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (4, 'usa', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (5, 'aut', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (6, 'oar', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (7, 'cor', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (8, 'chn', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (9, 'swe', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (10, 'fra', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (11, 'che', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (12, 'nld', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (13, 'cze', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (14, 'pol', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (15, 'ita', 1);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (16, 'jpn', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (17, 'fin', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (18, 'aus', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (19, 'blr', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (20, 'svk', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (21, 'cro', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (22, 'svn', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (23, 'lva', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (24, 'gbr', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (25, 'est', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (26, 'kaz', 2);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (27, 'grc', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (28, 'bra', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (29, 'ukr', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (30, 'jam', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (31, 'usa', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (32, 'ger', 3);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (33, 'can', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (34, 'nor', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (35, 'aut', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (36, 'oar', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (37, 'cor', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (38, 'chn', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (39, 'swe', 4);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (40, 'fra', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (41, 'che', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (42, 'nld', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (43, 'cze', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (44, 'pol', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (45, 'ita', 5);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (46, 'jpn', 6);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (47, 'fin', 6);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (48, 'aus', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (49, 'blr', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (50, 'svk', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (51, 'cro', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (52, 'svn', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (53, 'lva', 7);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (54, 'oar', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (55, 'est', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (56, 'kaz', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (57, 'grc', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (58, 'bra', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (59, 'ukr', 8);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (60, 'jam', 9);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (61, 'gbr', 9);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (62, 'usa', 9);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (63, 'ger', 10);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (64, 'can', 10);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (65, 'nor', 10);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (66, 'aut', 10);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (67, 'oar', 11);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (68, 'cor', 11);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (69, 'chn', 12);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (70, 'swe', 12);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (71, 'fra', 12);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (72, 'usa', 13);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (73, 'ger', 13);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (74, 'can', 14);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (75, 'nor', 14);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (76, 'aut', 14);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (77, 'oar', 14);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (78, 'cor', 15);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (79, 'chn', 15);
-INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (80, 'swe', 15);
 
 
 INSERT INTO PARTICIPANT (event_no, sport_team_no, medal) VALUES (1,1,'gold');
@@ -1007,17 +1051,118 @@ INSERT INTO MEMBER (sport_team_no, athlete_no) VALUES (78, 298);
 INSERT INTO MEMBER (sport_team_no, athlete_no) VALUES (79, 299);
 INSERT INTO MEMBER (sport_team_no, athlete_no) VALUES (80, 300);
 
-SELECT * FROM EVENT WHERE event_no IN
-(SELECT event_no FROM PARTICIPANT WHERE sport_team_no IN 
-(SELECT sport_team_no FROM SPORT_TEAM WHERE SPORT_TEAM.country_team_code IN
-(SELECT country_team_code FROM COUNTRY_TEAM WHERE COUNTRY_TEAM.country_name = 'United States of America')))
-AND start_time > '02/15/2018';
 
-SELECT venue_name FROM VENUE WHERE venue_code IN
-(SELECT venue_code FROM EVENT WHERE sport_no IN 
-(SELECT sport_no FROM SPORT WHERE sport_name = 'Ice hockey'));
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (1, 'nor', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (2, 'ger', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (3, 'can', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (4, 'usa', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (5, 'aut', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (6, 'oar', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (7, 'cor', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (8, 'chn', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (9, 'swe', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (10, 'fra', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (11, 'chi', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (12, 'nlz', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (13, 'cze', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (14, 'pol', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (15, 'ita', 1);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (16, 'jpn', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (17, 'fin', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (18, 'aus', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (19, 'blr', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (20, 'svk', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (21, 'cro', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (22, 'sgp', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (23, 'lbn', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (24, 'gbr', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (25, 'est', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (26, 'kaz', 2);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (27, 'geo', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (28, 'bra', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (29, 'ukr', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (30, 'jam', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (31, 'usa', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (32, 'ger', 3);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (33, 'can', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (34, 'nor', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (35, 'aut', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (36, 'oar', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (37, 'cor', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (38, 'chn', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (39, 'swe', 4);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (40, 'fra', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (41, 'chi', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (42, 'nlz', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (43, 'cze', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (44, 'pol', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (45, 'ita', 5);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (46, 'jpn', 6);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (47, 'fin', 6);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (48, 'aus', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (49, 'blr', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (50, 'svk', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (51, 'cro', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (52, 'sgp', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (53, 'lbn', 7);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (54, 'oar', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (55, 'est', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (56, 'kaz', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (57, 'geo', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (58, 'bra', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (59, 'ukr', 8);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (60, 'jam', 9);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (61, 'gbr', 9);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (62, 'usa', 9);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (63, 'ger', 10);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (64, 'can', 10);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (65, 'nor', 10);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (66, 'aut', 10);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (67, 'oar', 11);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (68, 'cor', 11);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (69, 'chn', 12);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (70, 'swe', 12);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (71, 'fra', 12);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (72, 'usa', 13);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (73, 'ger', 13);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (74, 'can', 14);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (75, 'nor', 14);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (76, 'aut', 14);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (77, 'oar', 14);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (78, 'cor', 15);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (79, 'chn', 15);
+INSERT INTO SPORT_TEAM (sport_team_no, country_team_code, sport_no) VALUES (80, 'swe', 15);
 
-SELECT event_name FROM EVENT WHERE event_no NOT IN
-(SELECT event_no FROM PARTICIPANT WHERE sport_team_no IN
-(SELECT sport_team_no FROM MEMBER WHERE athlete_no IN
-(SELECT athlete_no FROM ATHLETE WHERE dob BETWEEN '05/10/1985' AND '05/10/1990')));
+/* END Question 4 */
+
+/* create sequences for numeric keys */
+DECLARE
+    SEQ INTEGER;
+BEGIN
+    SELECT MAX(ATHLETE_NO) INTO SEQ FROM ATHLETE;
+    
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE ATHLETE_SEQ
+                       START WITH ' || SEQ ||
+                       ' INCREMENT BY 1';
+                       
+    SELECT MAX(EVENT_NO) INTO SEQ FROM EVENT;
+    
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE EVENT_SEQ
+                       START WITH ' || SEQ ||
+                       ' INCREMENT BY 1';
+                       
+    SELECT MAX(SPORT_TEAM_NO) INTO SEQ FROM SPORT_TEAM;
+    
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE SPORT_TEAM_SEQ
+                       START WITH ' || SEQ ||
+                       ' INCREMENT BY 1';
+                       
+    SELECT MAX(SPORT_NO) INTO SEQ FROM SPORT;
+    
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE SPORT_SEQ
+                       START WITH ' || SEQ ||
+                       ' INCREMENT BY 1';   
+END;
+/
+
+COMMIT;
